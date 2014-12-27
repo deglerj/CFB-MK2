@@ -1,6 +1,7 @@
 package org.jd.cfb;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class Runnables {
 
@@ -29,17 +30,27 @@ public class Runnables {
 		}
 	}
 
-	public static void runAndWait(final Runnable... runnables) {
-		final boolean[] threadCompleted = new boolean[runnables.length];
+	public static void runAndWait(final Collection<Runnable> runnables) {
+		if (runnables.isEmpty()) {
+			return;
+		}
+
+		final boolean[] threadCompleted = new boolean[runnables.size()];
 		Arrays.fill(threadCompleted, false);
 
-		for (int i = 0; i < runnables.length; i++) {
-			new WrapperThread(runnables[i], threadCompleted, i).start();
+		int i = 0;
+		for (final Runnable runnable : runnables) {
+			new WrapperThread(runnable, threadCompleted, i).start();
+			i++;
 		}
 
 		while (!isAllCompleted(threadCompleted)) {
 			Thread.yield();
 		}
+	}
+
+	public static void runAndWait(final Runnable... runnables) {
+		runAndWait(Collections.newCollection(runnables));
 	}
 
 	private static boolean isAllCompleted(final boolean[] threadCompleted) {
