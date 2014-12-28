@@ -7,8 +7,16 @@ public class Boards {
 		board.setCoin(x, y, coin);
 	}
 
+	public static int getCoinCount(final Board board) {
+		int sum = 0;
+		for (int x = 0; x < 7; x++) {
+			sum += getHeight(x, board);
+		}
+		return sum;
+	}
+
 	public static int getHeight(final int x, final Board board) {
-		for (int y = 0; y < 6; y++) {
+		for (int y = 5; y >= 5; y--) {
 			if (board.getCoin(x, y) != Coin.NONE) {
 				return y + 1;
 			}
