@@ -3,6 +3,7 @@ package org.jd.cfb;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.TouchSensor;
+import lejos.robotics.Color;
 
 public class Sensors {
 
@@ -10,6 +11,6 @@ public class Sensors {
 
 	public static TouchSensor	VERTICAL_STOPPER	= new TouchSensor(SensorPort.S2);
 
-	public static ColorSensor	COLOR				= new ColorSensor(SensorPort.S1);
+	public static ColorSensor	COLOR				= new ColorSensor(SensorPort.S1, Color.GREEN);
 
 }

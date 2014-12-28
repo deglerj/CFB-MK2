@@ -80,11 +80,11 @@ public class Operator {
 
 	private static final int	HORIZONTAL_NORMAL_SPEED			= 150;
 
-	private static final int	HORIZONTAL_PARKING_OFFSET		= 14;
+	private static final int	HORIZONTAL_PARKING_OFFSET		= 20;
 
 	private static final int	VERTICAL_PARKING_OFFSET			= 120;
 
-	private static final double	HORIZONTAL_POSITION_FACTOR		= 82;
+	private static final double	HORIZONTAL_POSITION_FACTOR		= 81.5;
 
 	private static final double	VERTICAL_POSITION_FACTOR		= 520;
 
