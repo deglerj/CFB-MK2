@@ -2,6 +2,7 @@ package org.jd.cfb;
 
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lejos.nxt.Sound;
 
 public class Main {
 
@@ -51,8 +52,39 @@ public class Main {
 	}
 
 	private static void dropCoin(final int x, final Board board) {
-		System.out.println("Please drop AI coin at " + x);
-		Button.ENTER.waitForPressAndRelease();
+		System.out.println("Please drop at " + x);
+		for (int i = 0; i <= x; i++) {
+			int frequency = 0;
+			switch (i) {
+				case 0:
+					frequency = 262;
+					break;
+				case 1:
+					frequency = 287;
+					break;
+				case 2:
+					frequency = 320;
+					break;
+				case 3:
+					frequency = 349;
+					break;
+				case 4:
+					frequency = 392;
+					break;
+				case 5:
+					frequency = 440;
+					break;
+				case 6:
+					frequency = 494;
+					break;
+			}
+			Sound.playTone(frequency, 250);
+			try {
+				Thread.sleep(300);
+			}
+			catch (final InterruptedException e) {
+			}
+		}
 
 		Boards.dropCoin(x, Coin.AI, board);
 	}
