@@ -2,7 +2,6 @@ package org.jd.cfb;
 
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
-import lejos.nxt.ColorSensor.Color;
 
 public class Main {
 
@@ -10,28 +9,43 @@ public class Main {
 		installEscapeListener();
 
 		final Operator operator = new Operator();
+		final AI ai = new RandomAI();
+		final Board board = new DefaultBoard();
+		final GameStateAnalyzer analyzer = new GameStateAnalyzer();
+		final Scanner scanner = new Scanner();
 
-		for (int y = 5; y >= 4; y--) {
-			for (int x = 0; x <= 6; x++) {
-				operator.moveTo(x, y);
+		operator.park();
 
-				final Color color = Sensors.COLOR.getRawColor();
+		while (analyzer.getState(board) == GameState.RUNNING) {
+			// Wait for the player to finish his move
+			Button.ENTER.waitForPressAndRelease();
 
-				System.out.println(color.getRed() + "," + color.getGreen() + "," + color.getBlue() + "," + color.getBackground());
+			scanner.updateBoard(board, operator);
 
-				Button.ENTER.waitForPressAndRelease();
+			if (analyzer.getState(board) != GameState.RUNNING) {
+				break;
 			}
+
+			final int nextMoveX = ai.getNextMove(board);
+
+			Boards.dropCoin(nextMoveX, Coin.AI, board);
 		}
 
-		for (int x = 0; x < 5; x++) {
-			for (int i = 0; i < 6; i++) {
-				operator.moveTo(i, i);
-
-			}
+		switch (analyzer.getState(board)) {
+			case AI_WON:
+				System.out.println("You lost :(");
+				break;
+			case PLAYER_WON:
+				System.out.println("You won!");
+				break;
+			case DRAW:
+				System.out.println("Draw");
+				break;
+			default:
+				throw new RuntimeException("Game finished with unexpected state");
 		}
 
-		operator.moveTo(0, 0);
-
+		Button.ENTER.waitForPressAndRelease();
 	}
 
 	private static void installEscapeListener() {
