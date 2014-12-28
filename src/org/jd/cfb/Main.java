@@ -14,10 +14,12 @@ public class Main {
 		final GameStateAnalyzer analyzer = new GameStateAnalyzer();
 		final Scanner scanner = new Scanner();
 
+		installPrintListener(board);
+
 		operator.park();
 
 		while (analyzer.getState(board) == GameState.RUNNING) {
-			// Wait for the player to finish his move
+			System.out.println("Your move!");
 			Button.ENTER.waitForPressAndRelease();
 
 			scanner.updateBoard(board, operator);
@@ -28,7 +30,7 @@ public class Main {
 
 			final int nextMoveX = ai.getNextMove(board);
 
-			Boards.dropCoin(nextMoveX, Coin.AI, board);
+			dropCoin(nextMoveX, board);
 		}
 
 		switch (analyzer.getState(board)) {
@@ -48,6 +50,13 @@ public class Main {
 		Button.ENTER.waitForPressAndRelease();
 	}
 
+	private static void dropCoin(final int x, final Board board) {
+		System.out.println("Please drop AI coin at " + x);
+		Button.ENTER.waitForPressAndRelease();
+
+		Boards.dropCoin(x, Coin.AI, board);
+	}
+
 	private static void installEscapeListener() {
 		Button.ESCAPE.addButtonListener(new ButtonListener() {
 			@Override
@@ -60,6 +69,20 @@ public class Main {
 
 			}
 		});
+	}
+
+	private static void installPrintListener(final Board board) {
+		Button.RIGHT.addButtonListener(new ButtonListener() {
+			@Override
+			public void buttonPressed(final Button b) {
+				Boards.print(board);
+			}
+
+			@Override
+			public void buttonReleased(final Button b) {
+			}
+		});
+
 	}
 
 }
