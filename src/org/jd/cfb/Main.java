@@ -2,7 +2,6 @@ package org.jd.cfb;
 
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
-import lejos.nxt.Sound;
 
 public class Main {
 
@@ -20,6 +19,7 @@ public class Main {
 		operator.park();
 
 		while (analyzer.getState(board) == GameState.RUNNING) {
+			Samples.play("Your move.wav");
 			System.out.println("Your move!");
 			Button.ENTER.waitForPressAndRelease();
 
@@ -36,12 +36,15 @@ public class Main {
 
 		switch (analyzer.getState(board)) {
 			case AI_WON:
+				Samples.play("You lost.wav");
 				System.out.println("You lost :(");
 				break;
 			case PLAYER_WON:
+				Samples.play("You won.wav");
 				System.out.println("You won!");
 				break;
 			case DRAW:
+				Samples.play("Draw.wav");
 				System.out.println("Draw");
 				break;
 			default:
@@ -52,40 +55,8 @@ public class Main {
 	}
 
 	private static void dropCoin(final int x, final Board board) {
-		System.out.println("Please drop at " + x);
-		for (int i = 0; i <= x; i++) {
-			int frequency = 0;
-			switch (i) {
-				case 0:
-					frequency = 262;
-					break;
-				case 1:
-					frequency = 287;
-					break;
-				case 2:
-					frequency = 320;
-					break;
-				case 3:
-					frequency = 349;
-					break;
-				case 4:
-					frequency = 392;
-					break;
-				case 5:
-					frequency = 440;
-					break;
-				case 6:
-					frequency = 494;
-					break;
-			}
-			Sound.playTone(frequency, 250);
-			try {
-				Thread.sleep(300);
-			}
-			catch (final InterruptedException e) {
-			}
-		}
-
+		Samples.play("Please drop.wav", (x + 1) + ".wav");
+		Button.ENTER.waitForPressAndRelease();
 		Boards.dropCoin(x, Coin.AI, board);
 	}
 
