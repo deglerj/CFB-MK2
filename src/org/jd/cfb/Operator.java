@@ -88,25 +88,25 @@ public class Operator {
 
 	private static final double	VERTICAL_POSITION_FACTOR		= 560;
 
-	private static final int	INITIAL_HORIZONTAL_CONFIDENCE	= 15;
+	private static final int	INITIAL_HORIZONTAL_CONFIDENCE	= 7;
 
-	private static final int	INITIAL_VERTICAL_CONFIDENCE		= 13;
+	private static final int	INITIAL_VERTICAL_CONFIDENCE		= 5;
 
 	private final ParkAction	parkVertical					= new ParkAction(Motors.VERTICAL, Sensors.VERTICAL_STOPPER, VERTICAL_HIGH_SPEED, true) {
-		@Override
-		protected void complete() {
-			verticalPosition = 0;
-			verticalConfidence = INITIAL_VERTICAL_CONFIDENCE;
-		}
-	};
+																	@Override
+																	protected void complete() {
+																		verticalPosition = 0;
+																		verticalConfidence = INITIAL_VERTICAL_CONFIDENCE;
+																	}
+																};
 
 	private final ParkAction	parkHorizontal					= new ParkAction(Motors.HORIZONTAL, Sensors.HORIZONTAL_STOPPER, HORIZONTAL_HIGH_SPEED, true) {
-		@Override
-		protected void complete() {
-			horizontalPosition = 0;
-			horizontalConfidence = INITIAL_HORIZONTAL_CONFIDENCE;
-		}
-	};
+																	@Override
+																	protected void complete() {
+																		horizontalPosition = 0;
+																		horizontalConfidence = INITIAL_HORIZONTAL_CONFIDENCE;
+																	}
+																};
 
 	private Integer				verticalPosition				= null;
 

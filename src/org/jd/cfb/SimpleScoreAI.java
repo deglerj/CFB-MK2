@@ -18,6 +18,10 @@ public class SimpleScoreAI implements AI {
 
 	private static final int	BLOCK_ENEMY_WIN_POINTS					= 10000;
 
+	private static final double	UNINTERUPTED_POINTS						= 1.15;
+
+	private static final double	ENEMY_UNINTERUPTED_POINTS				= 4.5;
+
 	@Override
 	public int getNextMove(final Board board) {
 		int bestScore = 0;
@@ -44,7 +48,7 @@ public class SimpleScoreAI implements AI {
 		}
 	}
 
-	private void doNextCoin(final int i, final int[] enemyOneWithEmptyNeighbor, final int[] enemyTwoInRowWithEmptyNeighbor,
+	private void doStreak(final int i, final int[] enemyOneWithEmptyNeighbor, final int[] enemyTwoInRowWithEmptyNeighbor,
 			final int[] enemyThreeInRowWithEmptyNeighbor, final int[] oneWithEmptyNeighbor, final int[] twoInRowWithEmptyNeighbor,
 			final int[] threeInRowWithEmptyNeighbor, final int[] fourInRow, final int[] length, final Coin[] lastCoin, final boolean[] emptyBeforeLastCoin,
 			final Coin[] coin, final Coin[] nextCoin) {
@@ -55,7 +59,6 @@ public class SimpleScoreAI implements AI {
 		}
 		// Coin changed?
 		else {
-
 			// Last coins were ours?
 			if (lastCoin[i] == Coin.AI) {
 				if (length[i] == 1) {
@@ -130,6 +133,42 @@ public class SimpleScoreAI implements AI {
 			length[i] = 0;
 			emptyBeforeLastCoin[i] = lastCoin[i] == Coin.NONE;
 			lastCoin[i] = coin[i];
+		}
+	}
+
+	private void doUninterupted(final int i, final Integer[] firstUninteruptedPosition, final Integer[] lastUninteruptedPosition,
+			final int[] uninteruptedPoints, final int[] enemyUninteruptedPoints, final Integer[] enemyFirstUninteruptedPosition,
+			final Integer[] enemyLastUninteruptedPosition, final Coin[] coin) {
+		if (coin[i] == Coin.AI && firstUninteruptedPosition[i] == null) {
+			firstUninteruptedPosition[i] = i;
+		}
+		else if (coin[i] == Coin.AI && firstUninteruptedPosition[i] != null) {
+			lastUninteruptedPosition[i] = i;
+		}
+		else if (coin[i] != Coin.AI && coin[i] != Coin.NONE) {
+			if (firstUninteruptedPosition[i] != null && lastUninteruptedPosition[i] != null) {
+				final int uninteruptedLength = (lastUninteruptedPosition[i] - firstUninteruptedPosition[i] + 1);
+				uninteruptedPoints[i] += Math.pow(UNINTERUPTED_POINTS, uninteruptedLength);
+			}
+
+			firstUninteruptedPosition[i] = null;
+			lastUninteruptedPosition[i] = null;
+		}
+
+		if (coin[i] == Coin.PLAYER && enemyFirstUninteruptedPosition[i] == null) {
+			enemyFirstUninteruptedPosition[i] = i;
+		}
+		else if (coin[i] == Coin.PLAYER && enemyFirstUninteruptedPosition[i] != null) {
+			enemyLastUninteruptedPosition[i] = i;
+		}
+		else if (coin[i] != Coin.PLAYER && coin[i] != Coin.NONE) {
+			if (enemyFirstUninteruptedPosition[i] != null && enemyLastUninteruptedPosition[i] != null) {
+				final int uninteruptedLength = (enemyLastUninteruptedPosition[i] - enemyFirstUninteruptedPosition[i] + 1);
+				enemyUninteruptedPoints[i] += Math.pow(ENEMY_UNINTERUPTED_POINTS, uninteruptedLength);
+			}
+
+			enemyFirstUninteruptedPosition[i] = null;
+			enemyLastUninteruptedPosition[i] = null;
 		}
 	}
 
@@ -265,20 +304,34 @@ public class SimpleScoreAI implements AI {
 		final int[] threeInRowWithEmptyNeighbor = { 0, 0 };
 		final int[] fourInRow = { 0, 0 };
 
+		int score = 0;
+
 		final int[] length = { 0, 0 };
 		final Coin[] lastCoin = { null, null };
 		final boolean[] emptyBeforeLastCoin = { false, false };
+
+		final Integer[] firstUninteruptedPosition = { null, null };
+		final Integer[] lastUninteruptedPosition = { null, null };
+		final int[] uninteruptedPoints = { 0, 0 };
+		final int[] enemyUninteruptedPoints = { 0, 0 };
+		final Integer[] enemyFirstUninteruptedPosition = { null, null };
+		final Integer[] enemyLastUninteruptedPosition = { null, null };
+
 		for (int i = 0; i <= row.length; i++) { // Do one additional loop with a "null coin" to include streaks at the end of the row
 			final Coin[] coin = (i > (row.length - 1)) ? new Coin[] { null, null } : row[i];
 			final Coin[] nextCoin = (i + 1 > row.length - 1) ? new Coin[] { null, null } : row[i + 1];
 
-			doNextCoin(0, enemyOneWithEmptyNeighbor, enemyTwoInRowWithEmptyNeighbor, enemyThreeInRowWithEmptyNeighbor, oneWithEmptyNeighbor,
+			doStreak(0, enemyOneWithEmptyNeighbor, enemyTwoInRowWithEmptyNeighbor, enemyThreeInRowWithEmptyNeighbor, oneWithEmptyNeighbor,
 					twoInRowWithEmptyNeighbor, threeInRowWithEmptyNeighbor, fourInRow, length, lastCoin, emptyBeforeLastCoin, coin, nextCoin);
-			doNextCoin(1, enemyOneWithEmptyNeighbor, enemyTwoInRowWithEmptyNeighbor, enemyThreeInRowWithEmptyNeighbor, oneWithEmptyNeighbor,
+			doStreak(1, enemyOneWithEmptyNeighbor, enemyTwoInRowWithEmptyNeighbor, enemyThreeInRowWithEmptyNeighbor, oneWithEmptyNeighbor,
 					twoInRowWithEmptyNeighbor, threeInRowWithEmptyNeighbor, fourInRow, length, lastCoin, emptyBeforeLastCoin, coin, nextCoin);
-		}
 
-		int score = 0;
+			doUninterupted(0, firstUninteruptedPosition, lastUninteruptedPosition, uninteruptedPoints, enemyUninteruptedPoints, enemyFirstUninteruptedPosition,
+					enemyLastUninteruptedPosition, nextCoin);
+			doUninterupted(1, firstUninteruptedPosition, lastUninteruptedPosition, uninteruptedPoints, enemyUninteruptedPoints, enemyFirstUninteruptedPosition,
+					enemyLastUninteruptedPosition, nextCoin);
+
+		}
 
 		score += (enemyOneWithEmptyNeighbor[0] - enemyOneWithEmptyNeighbor[1]) * BLOCK_ENEMY_TWO_IN_ROW_POINTS;
 		score += (enemyTwoInRowWithEmptyNeighbor[0] - enemyTwoInRowWithEmptyNeighbor[1]) * BLOCK_ENEMY_THREE_IN_ROW_POINTS;
@@ -288,6 +341,9 @@ public class SimpleScoreAI implements AI {
 		score += (twoInRowWithEmptyNeighbor[1] - twoInRowWithEmptyNeighbor[0]) * TWO_IN_ROW_WITH_EMPTY_NEIGHBOR_POINTS;
 		score += (threeInRowWithEmptyNeighbor[1] - threeInRowWithEmptyNeighbor[0]) * THREE_IN_ROW_WITH_EMPTY_NEIGHBOR_POINTS;
 		score += (fourInRow[1] - fourInRow[0]) * WINNING_POINTS;
+
+		score += uninteruptedPoints[1] - uninteruptedPoints[0];
+		score += enemyUninteruptedPoints[0] - enemyUninteruptedPoints[1];
 
 		return score;
 	}
