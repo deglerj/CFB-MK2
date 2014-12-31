@@ -25,4 +25,9 @@ public class OverlayBoard implements Board {
 		overlay[x][y] = coin;
 	}
 
+	@Override
+	public String toString() {
+		return Boards.toString(this);
+	}
+
 }

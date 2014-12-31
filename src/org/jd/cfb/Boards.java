@@ -26,6 +26,13 @@ public class Boards {
 	}
 
 	public static void print(final Board board) {
+		final String string = toString(board);
+
+		System.out.println(string);
+	}
+
+	public static String toString(final Board board) {
+		String string = "";
 		for (int y = 5; y >= 0; y--) {
 			String row = "";
 			for (int x = 0; x < 7; x++) {
@@ -40,8 +47,14 @@ public class Boards {
 					row += "_";
 				}
 			}
-			System.out.println(row);
+
+			if (y != 5) {
+				string += "\n";
+			}
+
+			string += row;
 		}
+		return string;
 	}
 
 }

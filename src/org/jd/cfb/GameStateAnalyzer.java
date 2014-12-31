@@ -2,9 +2,64 @@ package org.jd.cfb;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameStateAnalyzer {
+
+	public static class Row implements Iterable<Coin> {
+		private final List<Coin>	coins	= new ArrayList<Coin>(7);
+
+		private int					validCoins;
+
+		public void add(final Coin coin) {
+			coins.add(coin);
+
+			if (coin != Coin.NONE) {
+				validCoins++;
+			}
+		}
+
+		public GameState getState() {
+			if (validCoins < 4) {
+				return GameState.RUNNING;
+			}
+
+			Coin lastCoin = null;
+			int length = 0;
+
+			for (final Coin coin : coins) {
+				if (coin == lastCoin) {
+					length++;
+					// Four coins in a row? -> Someone has won
+					if (length == 4 && coin != Coin.NONE) {
+						if (coin == Coin.AI) {
+							return GameState.AI_WON;
+						}
+						else {
+							return GameState.PLAYER_WON;
+						}
+					}
+				}
+				else {
+					lastCoin = coin;
+					length = 1;
+				}
+			}
+
+			return GameState.RUNNING;
+		}
+
+		@Override
+		public Iterator<Coin> iterator() {
+			return coins.iterator();
+		}
+
+		@Override
+		public String toString() {
+			return "Row [coins=" + coins + "]";
+		}
+	}
 
 	private static class DiagonalRowProvider implements RowProvider {
 		private final int		startX;
@@ -61,55 +116,6 @@ public class GameStateAnalyzer {
 				row.add(board.getCoin(x, y));
 			}
 			return row;
-		}
-	}
-
-	private static class Row {
-		private final List<Coin>	coins	= new ArrayList<Coin>(7);
-
-		private int					validCoins;
-
-		public void add(final Coin coin) {
-			coins.add(coin);
-
-			if (coin != Coin.NONE) {
-				validCoins++;
-			}
-		}
-
-		public GameState getState() {
-			if (validCoins < 4) {
-				return GameState.RUNNING;
-			}
-
-			Coin lastCoin = null;
-			int length = 0;
-
-			for (final Coin coin : coins) {
-				if (coin == lastCoin) {
-					length++;
-					// Four coins in a row? -> Someone has won
-					if (length == 4 && coin != Coin.NONE) {
-						if (coin == Coin.AI) {
-							return GameState.AI_WON;
-						}
-						else {
-							return GameState.PLAYER_WON;
-						}
-					}
-				}
-				else {
-					lastCoin = coin;
-					length = 1;
-				}
-			}
-
-			return GameState.RUNNING;
-		}
-
-		@Override
-		public String toString() {
-			return "Row [coins=" + coins + "]";
 		}
 	}
 

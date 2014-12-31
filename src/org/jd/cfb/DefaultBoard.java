@@ -20,4 +20,9 @@ public class DefaultBoard implements Board {
 		coins[x][y] = coin;
 	}
 
+	@Override
+	public String toString() {
+		return Boards.toString(this);
+	}
+
 }

@@ -9,7 +9,7 @@ public class Main {
 		installEscapeListener();
 
 		final Operator operator = new Operator();
-		final AI ai = new RandomAI();
+		final AI ai = new SimpleScoreAI();
 		final Board board = new DefaultBoard();
 		final GameStateAnalyzer analyzer = new GameStateAnalyzer();
 		final Scanner scanner = new Scanner();
@@ -20,7 +20,6 @@ public class Main {
 
 		while (analyzer.getState(board) == GameState.RUNNING) {
 			Samples.play("Your move.wav");
-			System.out.println("Your move!");
 			Button.ENTER.waitForPressAndRelease();
 
 			scanner.updateBoard(board, operator);
@@ -37,15 +36,12 @@ public class Main {
 		switch (analyzer.getState(board)) {
 			case AI_WON:
 				Samples.play("You lost.wav");
-				System.out.println("You lost :(");
 				break;
 			case PLAYER_WON:
 				Samples.play("You won.wav");
-				System.out.println("You won!");
 				break;
 			case DRAW:
 				Samples.play("Draw.wav");
-				System.out.println("Draw");
 				break;
 			default:
 				throw new RuntimeException("Game finished with unexpected state");
