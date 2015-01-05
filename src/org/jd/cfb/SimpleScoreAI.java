@@ -2,25 +2,25 @@ package org.jd.cfb;
 
 public class SimpleScoreAI implements AI {
 
-	private static final int	WINNING_POINTS							= 100000;
+	public int		WINNING_POINTS							= 100000;
 
-	private static final int	TWO_IN_ROW_WITH_EMPTY_NEIGHBOR_POINTS	= 10;		// Rows with two empty neighbors are counted twice
+	public int		TWO_IN_ROW_WITH_EMPTY_NEIGHBOR_POINTS	= 60;		// Rows with two empty neighbors are counted twice
 
-	private static final int	THREE_IN_ROW_WITH_EMPTY_NEIGHBOR_POINTS	= 100;		// Rows with two empty neighbors are counted twice
+	public int		THREE_IN_ROW_WITH_EMPTY_NEIGHBOR_POINTS	= 392;		// Rows with two empty neighbors are counted twice
 
-	private static final int	ONE_WITH_EMPTY_NEIGHBOR_POINTS			= 2;
+	public int		ONE_WITH_EMPTY_NEIGHBOR_POINTS			= 2;
 
-	private static final int	BLOCK_ENEMY_TWO_IN_ROW_POINTS			= 30;		// Enemy has one coin with an empty neighbor, now he
+	public int		BLOCK_ENEMY_TWO_IN_ROW_POINTS			= 11;		// Enemy has one coin with an empty neighbor, now he
 	// can't have two
 
-	private static final int	BLOCK_ENEMY_THREE_IN_ROW_POINTS			= 90;		// Enemy has two coins with an empty neighbor, now he
+	public int		BLOCK_ENEMY_THREE_IN_ROW_POINTS			= 324;		// Enemy has two coins with an empty neighbor, now he
 	// can't have three
 
-	private static final int	BLOCK_ENEMY_WIN_POINTS					= 10000;
+	public int		BLOCK_ENEMY_WIN_POINTS					= 10000;
 
-	private static final double	UNINTERUPTED_POINTS						= 1.15;
+	public double	UNINTERUPTED_POINTS						= 1.44;
 
-	private static final double	ENEMY_UNINTERUPTED_POINTS				= 4.5;
+	public double	ENEMY_UNINTERUPTED_POINTS				= 11.10;
 
 	@Override
 	public int getNextMove(final Board board) {
